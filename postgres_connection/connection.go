@@ -10,6 +10,5 @@ func GoConnectingSql()(* sql.DB, error){
 	if err != nil{
 		fmt.Println("Error while connecting to database")
 	}
-	defer db.Close()
 	return db, nil
 }

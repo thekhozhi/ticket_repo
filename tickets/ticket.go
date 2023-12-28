@@ -89,3 +89,38 @@ func (d *Database) DeleteTicket () error{
 	}
 	return nil
 }
+
+func (d *Database) ReportTicket() error{
+
+type Report struct {
+	fromCity string
+	toCity string
+	firstName string
+	lastName string
+	Phone string
+}
+
+reports := []Report{}
+
+from, to := "", ""
+fmt.Print("Put from: ")
+fmt.Scan(&from)
+fmt.Print("\nPut to: ")
+fmt.Scan(&to)
+
+rows, err := d.db.Query(`select from_city as from, to_city as to, first_name, last_name, phone as Customer_phone from tickets 
+LEFT JOIN users ON tickets.id = users.ticket_id where from_city = $1 and to_city = $2;`, from, to)
+if err != nil{
+	fmt.Println("Error while joining!", err)
+}
+for rows.Next(){
+r := Report{}
+err := rows.Scan(&r.fromCity, &r.toCity, &r.firstName, &r.lastName, &r.Phone)
+
+if err != nil{
+	fmt.Println("Error while scanning into report struct!", err)
+}
+reports = append(reports, r)
+}
+return nil
+}
